@@ -1,0 +1,30 @@
+{
+  "name": "coquetel-cores",
+  "version": "0.0.1",
+  "description": "api de entrega de cores",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ruanosena/coquetel-cores.git"
+  },
+  "keywords": [
+    "api",
+    "cores",
+    "coquetel",
+    "coco"
+  ],
+  "author": "ruanosena",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ruanosena/coquetel-cores/issues"
+  },
+  "homepage": "https://github.com/ruanosena/coquetel-cores#readme",
+  "devDependencies": {
+    "@types/node": "^20.8.2"
+  }
+}

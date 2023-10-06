@@ -26,5 +26,8 @@
   "homepage": "https://github.com/ruanosena/coquetel-cores#readme",
   "devDependencies": {
     "@types/node": "^20.8.2"
+  },
+  "dependencies": {
+    "node-sass": "^9.0.0"
   }
 }

@@ -2,7 +2,7 @@
   "name": "coquetel-cores",
   "version": "0.0.1",
   "description": "api de entrega de cores",
-  "main": "index.js",
+  "main": "codigo.js",
   "type": "module",
   "scripts": {
     "start": "node .",

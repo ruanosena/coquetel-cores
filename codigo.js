@@ -4,10 +4,8 @@ import sass from "node-sass";
 import fs from "node:fs";
 
 const server = http.createServer(function (req, res) {
-	console.log(qs.parse(req.url));
-
 	if (req.method == "GET") {
-		// separa o caminho da consulta, iniciada com '?' no url
+		// seleciona o caminho e separa da consulta, iniciada com '?' no url
 		let caminho = req.url.indexOf("?") > -1 ? req.url.slice(0, req.url.indexOf("?")) : req.url;
 
 		if (caminho == "/") {
@@ -19,21 +17,19 @@ const server = http.createServer(function (req, res) {
 		} else if (caminho == "/cores") {
 			/* API */
 
-			// indexa a consulta e normaliza a chave do objeto junto ao caminho
-			const consultas = Object.fromEntries(
-				Object.entries(qs.parse(req.url || ""), "&", "=").map(([consulta, valor], i) =>
-					i == 0 ? [consulta.slice(caminho.length + 1 /* '?' */), valor] : [consulta, valor]
-				)
-			);
-
-			console.log(caminho, consultas);
-			// TODO: adicionar filtro de cores nomeadas do css
-			let cores = consultas.c ?? [];
-
-			// TODO: adicionar resposta minificada, resumida em uma linha
+			// identifica todos valores sendo cores
+			let cores = Object.values(qs.parse(req.url));
 
 			if (cores.length) {
-				cores = cores.split(/,|\s/);
+				// TODO: adicionar filtro de cores nomeadas do css
+				// normaliza valores múltiplos
+				cores = cores.reduce((coresConsultadas, valor) => {
+					if (typeof valor == "string" && /,|\s/.test(valor)) {
+						valor = valor.trim();
+						let valor = valor.split(/,|\s/);
+					}
+					return Array.isArray(valor) ? [...coresConsultadas, ...valor] : [...coresConsultadas, valor];
+				}, []);
 
 				const resultado = sass.renderSync({
 					data: cores.reduce(function (estilos, cor) {
@@ -43,7 +39,7 @@ const server = http.createServer(function (req, res) {
 						return (
 							estilos +
 							`
-						@for $i from 20 through 80 {
+							@for $i from 20 through 80 {
 							@if $i % 20 == 0 {
 								$porcentagem: $i*1%;
 								--${cor}-#{$i / 2} {
@@ -67,6 +63,7 @@ const server = http.createServer(function (req, res) {
 					}, ""),
 				});
 
+				// TODO: adicionar resposta minificada, resumida em uma linha
 				res.writeHead(200, { "Content-Type": "text/css; charset=utf-8" });
 				res.write(resultado.css);
 

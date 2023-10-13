@@ -1,14 +1,714 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0">
-  <title>Coquetel de Cores</title>
-</head>
-<body>
-  <main>
-    <label for="seletorDeCor">selecione uma cor</label>
-    <input type="color" name="seletorCor" id="seletorDeCor">
-  </main>
-</body>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="c" value="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0" />
+		<title>Coquetel de Cores</title>
+		<style>
+			fieldset {
+				min-height: 12rem;
+				max-height: 50vh;
+				overflow-y: scroll;
+				padding: 0.5rem 1rem;
+				display: flex;
+				flex-flow: row wrap;
+				justify-content: flex-start;
+				align-items: flex-start;
+			}
+			legend {
+				padding: 0.5rem;
+				font-size: 1.1rem;
+			}
+			.Cor {
+				flex: 1 auto 1;
+				min-width: 15rem;
+				display: inline-block;
+				padding: 0.25rem 0.5rem;
+			}
+			input[type="checkbox"] {
+				width: 1.5rem;
+				height: 1.5rem;
+			}
+			.NomeCor {
+				font-size: 1.15rem;
+				text-transform: capitalize;
+				cursor: pointer;
+			}
+			.CorAmostra {
+				display: inline-block;
+				width: 2rem;
+				height: 2rem;
+			}
+			button {
+				font-family: inherit;
+				font-size: inherit;
+				font-weight: 700;
+				cursor: pointer;
+				display: inline-block;
+				line-height: 1.125rem;
+				padding: 0.5rem 1rem;
+				margin: 0;
+				height: auto;
+				border: 1px solid transparent;
+				vertical-align: middle;
+				color: inherit;
+				background-color: transparent;
+			}
+			button,
+			button:hover {
+				text-decoration: none;
+			}
+			button:focus {
+				outline: none;
+				border-color: rgba(0, 0, 0, 0.125);
+				box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.25);
+			}
+		</style>
+		<script>
+			window.addEventListener("DOMContentLoaded", function () {
+				const corOpcaoRgx = /(\w+)\s(#[a-f0-9]{6})/i; //vermelho #ffff00;
+				const cores = document.querySelectorAll(".Cor");
+				const selecionarTudoBtn = document.getElementById("SelecionarTudo");
+
+				cores.forEach(function (elemento) {
+					let [_, nome, corEmHexa] = corOpcaoRgx.exec(elemento.textContent) ?? [];
+					if (_) {
+						let amostra = document.createElement("input");
+						amostra.type = "color";
+						amostra.classList.add("CorAmostra");
+						amostra.setAttribute("value", corEmHexa);
+						amostra.disabled = true;
+						// label - rotulo
+						elemento.querySelector(".NomeCor").textContent = nome;
+						elemento.appendChild(amostra);
+					} else {
+						// remove "transparent"
+						elemento.remove();
+					}
+				});
+
+				selecionarTudoBtn.addEventListener("pointerup", function () {
+					/** @type {HTMLInputElement} **/
+					let input;
+					cores.forEach(function (elemento) {
+						input = elemento.querySelector("input");
+						input.checked = true;
+					});
+				});
+			});
+		</script>
+	</head>
+	<body>
+		<main>
+			<h1>Coquetel de Cores</h1>
+
+			<section>
+				<form action="/cores" method="get">
+					<fieldset>
+						<legend>Cores padrão</legend>
+						<div class="Cor">
+							<input type="checkbox" id="aliceblue" name="c" value="aliceblue" />
+							<label class="NomeCor" for="aliceblue">aliceblue #f0f8ff</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="antiquewhite" name="c" value="antiquewhite" />
+							<label class="NomeCor" for="antiquewhite">antiquewhite #faebd7</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="aqua" name="c" value="aqua" />
+							<label class="NomeCor" for="aqua">aqua #00ffff</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="aquamarine" name="c" value="aquamarine" />
+							<label class="NomeCor" for="aquamarine">aquamarine #7fffd4</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="azure" name="c" value="azure" />
+							<label class="NomeCor" for="azure">azure #f0ffff</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="beige" name="c" value="beige" />
+							<label class="NomeCor" for="beige">beige #f5f5dc</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="bisque" name="c" value="bisque" />
+							<label class="NomeCor" for="bisque">bisque #ffe4c4</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="black" name="c" value="black" />
+							<label class="NomeCor" for="black">black #000000</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="blanchedalmond" name="c" value="blanchedalmond" />
+							<label class="NomeCor" for="blanchedalmond">blanchedalmond #ffebcd</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="blue" name="c" value="blue" />
+							<label class="NomeCor" for="blue">blue #0000ff</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="blueviolet" name="c" value="blueviolet" />
+							<label class="NomeCor" for="blueviolet">blueviolet #8a2be2</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="brown" name="c" value="brown" />
+							<label class="NomeCor" for="brown">brown #a52a2a</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="burlywood" name="c" value="burlywood" />
+							<label class="NomeCor" for="burlywood">burlywood #deb887</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="cadetblue" name="c" value="cadetblue" />
+							<label class="NomeCor" for="cadetblue">cadetblue #5f9ea0</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="chartreuse" name="c" value="chartreuse" />
+							<label class="NomeCor" for="chartreuse">chartreuse #7fff00</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="chocolate" name="c" value="chocolate" />
+							<label class="NomeCor" for="chocolate">chocolate #d2691e</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="coral" name="c" value="coral" />
+							<label class="NomeCor" for="coral">coral #ff7f50</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="cornflowerblue" name="c" value="cornflowerblue" />
+							<label class="NomeCor" for="cornflowerblue">cornflowerblue #6495ed</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="cornsilk" name="c" value="cornsilk" />
+							<label class="NomeCor" for="cornsilk">cornsilk #fff8dc</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="crimson" name="c" value="crimson" />
+							<label class="NomeCor" for="crimson">crimson #dc143c</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="cyan" name="c" value="cyan" />
+							<label class="NomeCor" for="cyan">cyan #00ffff</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="darkblue" name="c" value="darkblue" />
+							<label class="NomeCor" for="darkblue">darkblue #00008b</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="darkcyan" name="c" value="darkcyan" />
+							<label class="NomeCor" for="darkcyan">darkcyan #008b8b</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="darkgoldenrod" name="c" value="darkgoldenrod" />
+							<label class="NomeCor" for="darkgoldenrod">darkgoldenrod #b8860b</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="darkgray" name="c" value="darkgray" />
+							<label class="NomeCor" for="darkgray">darkgray #a9a9a9</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="darkgreen" name="c" value="darkgreen" />
+							<label class="NomeCor" for="darkgreen">darkgreen #006400</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="darkgrey" name="c" value="darkgrey" />
+							<label class="NomeCor" for="darkgrey">darkgrey #a9a9a9</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="darkkhaki" name="c" value="darkkhaki" />
+							<label class="NomeCor" for="darkkhaki">darkkhaki #bdb76b</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="darkmagenta" name="c" value="darkmagenta" />
+							<label class="NomeCor" for="darkmagenta">darkmagenta #8b008b</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="darkolivegreen" name="c" value="darkolivegreen" />
+							<label class="NomeCor" for="darkolivegreen">darkolivegreen #556b2f</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="darkorange" name="c" value="darkorange" />
+							<label class="NomeCor" for="darkorange">darkorange #ff8c00</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="darkorchid" name="c" value="darkorchid" />
+							<label class="NomeCor" for="darkorchid">darkorchid #9932cc</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="darkred" name="c" value="darkred" />
+							<label class="NomeCor" for="darkred">darkred #8b0000</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="darksalmon" name="c" value="darksalmon" />
+							<label class="NomeCor" for="darksalmon">darksalmon #e9967a</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="darkseagreen" name="c" value="darkseagreen" />
+							<label class="NomeCor" for="darkseagreen">darkseagreen #8fbc8f</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="darkslateblue" name="c" value="darkslateblue" />
+							<label class="NomeCor" for="darkslateblue">darkslateblue #483d8b</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="darkslategray" name="c" value="darkslategray" />
+							<label class="NomeCor" for="darkslategray">darkslategray #2f4f4f</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="darkslategrey" name="c" value="darkslategrey" />
+							<label class="NomeCor" for="darkslategrey">darkslategrey #2f4f4f</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="darkturquoise" name="c" value="darkturquoise" />
+							<label class="NomeCor" for="darkturquoise">darkturquoise #00ced1</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="darkviolet" name="c" value="darkviolet" />
+							<label class="NomeCor" for="darkviolet">darkviolet #9400d3</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="deeppink" name="c" value="deeppink" />
+							<label class="NomeCor" for="deeppink">deeppink #ff1493</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="deepskyblue" name="c" value="deepskyblue" />
+							<label class="NomeCor" for="deepskyblue">deepskyblue #00bfff</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="dimgray" name="c" value="dimgray" />
+							<label class="NomeCor" for="dimgray">dimgray #696969</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="dimgrey" name="c" value="dimgrey" />
+							<label class="NomeCor" for="dimgrey">dimgrey #696969</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="dodgerblue" name="c" value="dodgerblue" />
+							<label class="NomeCor" for="dodgerblue">dodgerblue #1e90ff</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="firebrick" name="c" value="firebrick" />
+							<label class="NomeCor" for="firebrick">firebrick #b22222</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="floralwhite" name="c" value="floralwhite" />
+							<label class="NomeCor" for="floralwhite">floralwhite #fffaf0</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="forestgreen" name="c" value="forestgreen" />
+							<label class="NomeCor" for="forestgreen">forestgreen #228b22</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="fuchsia" name="c" value="fuchsia" />
+							<label class="NomeCor" for="fuchsia">fuchsia #ff00ff</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="gainsboro" name="c" value="gainsboro" />
+							<label class="NomeCor" for="gainsboro">gainsboro #dcdcdc</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="ghostwhite" name="c" value="ghostwhite" />
+							<label class="NomeCor" for="ghostwhite">ghostwhite #f8f8ff</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="gold" name="c" value="gold" />
+							<label class="NomeCor" for="gold">gold #ffd700</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="goldenrod" name="c" value="goldenrod" />
+							<label class="NomeCor" for="goldenrod">goldenrod #daa520</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="gray" name="c" value="gray" />
+							<label class="NomeCor" for="gray">gray #808080</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="green" name="c" value="green" />
+							<label class="NomeCor" for="green">green #008000</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="greenyellow" name="c" value="greenyellow" />
+							<label class="NomeCor" for="greenyellow">greenyellow #adff2f</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="grey" name="c" value="grey" />
+							<label class="NomeCor" for="grey">grey #808080</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="honeydew" name="c" value="honeydew" />
+							<label class="NomeCor" for="honeydew">honeydew #f0fff0</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="hotpink" name="c" value="hotpink" />
+							<label class="NomeCor" for="hotpink">hotpink #ff69b4</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="indianred" name="c" value="indianred" />
+							<label class="NomeCor" for="indianred">indianred #cd5c5c</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="indigo" name="c" value="indigo" />
+							<label class="NomeCor" for="indigo">indigo #4b0082</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="ivory" name="c" value="ivory" />
+							<label class="NomeCor" for="ivory">ivory #fffff0</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="khaki" name="c" value="khaki" />
+							<label class="NomeCor" for="khaki">khaki #f0e68c</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="lavender" name="c" value="lavender" />
+							<label class="NomeCor" for="lavender">lavender #e6e6fa</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="lavenderblush" name="c" value="lavenderblush" />
+							<label class="NomeCor" for="lavenderblush">lavenderblush #fff0f5</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="lawngreen" name="c" value="lawngreen" />
+							<label class="NomeCor" for="lawngreen">lawngreen #7cfc00</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="lemonchiffon" name="c" value="lemonchiffon" />
+							<label class="NomeCor" for="lemonchiffon">lemonchiffon #fffacd</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="lightblue" name="c" value="lightblue" />
+							<label class="NomeCor" for="lightblue">lightblue #add8e6</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="lightcoral" name="c" value="lightcoral" />
+							<label class="NomeCor" for="lightcoral">lightcoral #f08080</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="lightcyan" name="c" value="lightcyan" />
+							<label class="NomeCor" for="lightcyan">lightcyan #e0ffff</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="lightgoldenrodyellow" name="c" value="lightgoldenrodyellow" />
+							<label class="NomeCor" for="lightgoldenrodyellow">lightgoldenrodyellow #fafad2</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="lightgray" name="c" value="lightgray" />
+							<label class="NomeCor" for="lightgray">lightgray #d3d3d3</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="lightgreen" name="c" value="lightgreen" />
+							<label class="NomeCor" for="lightgreen">lightgreen #90ee90</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="lightgrey" name="c" value="lightgrey" />
+							<label class="NomeCor" for="lightgrey">lightgrey #d3d3d3</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="lightpink" name="c" value="lightpink" />
+							<label class="NomeCor" for="lightpink">lightpink #ffb6c1</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="lightsalmon" name="c" value="lightsalmon" />
+							<label class="NomeCor" for="lightsalmon">lightsalmon #ffa07a</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="lightseagreen" name="c" value="lightseagreen" />
+							<label class="NomeCor" for="lightseagreen">lightseagreen #20b2aa</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="lightskyblue" name="c" value="lightskyblue" />
+							<label class="NomeCor" for="lightskyblue">lightskyblue #87cefa</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="lightslategray" name="c" value="lightslategray" />
+							<label class="NomeCor" for="lightslategray">lightslategray #778899</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="lightslategrey" name="c" value="lightslategrey" />
+							<label class="NomeCor" for="lightslategrey">lightslategrey #778899</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="lightsteelblue" name="c" value="lightsteelblue" />
+							<label class="NomeCor" for="lightsteelblue">lightsteelblue #b0c4de</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="lightyellow" name="c" value="lightyellow" />
+							<label class="NomeCor" for="lightyellow">lightyellow #ffffe0</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="lime" name="c" value="lime" />
+							<label class="NomeCor" for="lime">lime #00ff00</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="limegreen" name="c" value="limegreen" />
+							<label class="NomeCor" for="limegreen">limegreen #32cd32</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="linen" name="c" value="linen" />
+							<label class="NomeCor" for="linen">linen #faf0e6</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="magenta" name="c" value="magenta" />
+							<label class="NomeCor" for="magenta">magenta #ff00ff</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="maroon" name="c" value="maroon" />
+							<label class="NomeCor" for="maroon">maroon #800000</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="mediumaquamarine" name="c" value="mediumaquamarine" />
+							<label class="NomeCor" for="mediumaquamarine">mediumaquamarine #66cdaa</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="mediumblue" name="c" value="mediumblue" />
+							<label class="NomeCor" for="mediumblue">mediumblue #0000cd</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="mediumorchid" name="c" value="mediumorchid" />
+							<label class="NomeCor" for="mediumorchid">mediumorchid #ba55d3</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="mediumpurple" name="c" value="mediumpurple" />
+							<label class="NomeCor" for="mediumpurple">mediumpurple #9370db</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="mediumseagreen" name="c" value="mediumseagreen" />
+							<label class="NomeCor" for="mediumseagreen">mediumseagreen #3cb371</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="mediumslateblue" name="c" value="mediumslateblue" />
+							<label class="NomeCor" for="mediumslateblue">mediumslateblue #7b68ee</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="mediumspringgreen" name="c" value="mediumspringgreen" />
+							<label class="NomeCor" for="mediumspringgreen">mediumspringgreen #00fa9a</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="mediumturquoise" name="c" value="mediumturquoise" />
+							<label class="NomeCor" for="mediumturquoise">mediumturquoise #48d1cc</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="mediumvioletred" name="c" value="mediumvioletred" />
+							<label class="NomeCor" for="mediumvioletred">mediumvioletred #c71585</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="midnightblue" name="c" value="midnightblue" />
+							<label class="NomeCor" for="midnightblue">midnightblue #191970</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="mintcream" name="c" value="mintcream" />
+							<label class="NomeCor" for="mintcream">mintcream #f5fffa</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="mistyrose" name="c" value="mistyrose" />
+							<label class="NomeCor" for="mistyrose">mistyrose #ffe4e1</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="moccasin" name="c" value="moccasin" />
+							<label class="NomeCor" for="moccasin">moccasin #ffe4b5</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="navajowhite" name="c" value="navajowhite" />
+							<label class="NomeCor" for="navajowhite">navajowhite #ffdead</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="navy" name="c" value="navy" />
+							<label class="NomeCor" for="navy">navy #000080</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="oldlace" name="c" value="oldlace" />
+							<label class="NomeCor" for="oldlace">oldlace #fdf5e6</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="olive" name="c" value="olive" />
+							<label class="NomeCor" for="olive">olive #808000</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="olivedrab" name="c" value="olivedrab" />
+							<label class="NomeCor" for="olivedrab">olivedrab #6b8e23</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="orange" name="c" value="orange" />
+							<label class="NomeCor" for="orange">orange #ffa500</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="orangered" name="c" value="orangered" />
+							<label class="NomeCor" for="orangered">orangered #ff4500</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="orchid" name="c" value="orchid" />
+							<label class="NomeCor" for="orchid">orchid #da70d6</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="palegoldenrod" name="c" value="palegoldenrod" />
+							<label class="NomeCor" for="palegoldenrod">palegoldenrod #eee8aa</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="palegreen" name="c" value="palegreen" />
+							<label class="NomeCor" for="palegreen">palegreen #98fb98</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="paleturquoise" name="c" value="paleturquoise" />
+							<label class="NomeCor" for="paleturquoise">paleturquoise #afeeee</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="palevioletred" name="c" value="palevioletred" />
+							<label class="NomeCor" for="palevioletred">palevioletred #db7093</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="papayawhip" name="c" value="papayawhip" />
+							<label class="NomeCor" for="papayawhip">papayawhip #ffefd5</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="peachpuff" name="c" value="peachpuff" />
+							<label class="NomeCor" for="peachpuff">peachpuff #ffdab9</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="peru" name="c" value="peru" />
+							<label class="NomeCor" for="peru">peru #cd853f</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="pink" name="c" value="pink" />
+							<label class="NomeCor" for="pink">pink #ffc0cb</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="plum" name="c" value="plum" />
+							<label class="NomeCor" for="plum">plum #dda0dd</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="powderblue" name="c" value="powderblue" />
+							<label class="NomeCor" for="powderblue">powderblue #b0e0e6</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="purple" name="c" value="purple" />
+							<label class="NomeCor" for="purple">purple #800080</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="rebeccapurple" name="c" value="rebeccapurple" />
+							<label class="NomeCor" for="rebeccapurple">rebeccapurple #663399</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="red" name="c" value="red" />
+							<label class="NomeCor" for="red">red #ff0000</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="rosybrown" name="c" value="rosybrown" />
+							<label class="NomeCor" for="rosybrown">rosybrown #bc8f8f</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="royalblue" name="c" value="royalblue" />
+							<label class="NomeCor" for="royalblue">royalblue #4169e1</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="saddlebrown" name="c" value="saddlebrown" />
+							<label class="NomeCor" for="saddlebrown">saddlebrown #8b4513</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="salmon" name="c" value="salmon" />
+							<label class="NomeCor" for="salmon">salmon #fa8072</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="sandybrown" name="c" value="sandybrown" />
+							<label class="NomeCor" for="sandybrown">sandybrown #f4a460</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="seagreen" name="c" value="seagreen" />
+							<label class="NomeCor" for="seagreen">seagreen #2e8b57</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="seashell" name="c" value="seashell" />
+							<label class="NomeCor" for="seashell">seashell #fff5ee</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="sienna" name="c" value="sienna" />
+							<label class="NomeCor" for="sienna">sienna #a0522d</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="silver" name="c" value="silver" />
+							<label class="NomeCor" for="silver">silver #c0c0c0</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="skyblue" name="c" value="skyblue" />
+							<label class="NomeCor" for="skyblue">skyblue #87ceeb</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="slateblue" name="c" value="slateblue" />
+							<label class="NomeCor" for="slateblue">slateblue #6a5acd</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="slategray" name="c" value="slategray" />
+							<label class="NomeCor" for="slategray">slategray #708090</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="slategrey" name="c" value="slategrey" />
+							<label class="NomeCor" for="slategrey">slategrey #708090</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="snow" name="c" value="snow" />
+							<label class="NomeCor" for="snow">snow #fffafa</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="springgreen" name="c" value="springgreen" />
+							<label class="NomeCor" for="springgreen">springgreen #00ff7f</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="steelblue" name="c" value="steelblue" />
+							<label class="NomeCor" for="steelblue">steelblue #4682b4</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="tan" name="c" value="tan" />
+							<label class="NomeCor" for="tan">tan #d2b48c</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="teal" name="c" value="teal" />
+							<label class="NomeCor" for="teal">teal #008080</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="thistle" name="c" value="thistle" />
+							<label class="NomeCor" for="thistle">thistle #d8bfd8</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="tomato" name="c" value="tomato" />
+							<label class="NomeCor" for="tomato">tomato #ff6347</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="transparent" name="c" value="transparent" />
+							<label class="NomeCor" for="transparent">transparent</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="turquoise" name="c" value="turquoise" />
+							<label class="NomeCor" for="turquoise">turquoise #40e0d0</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="violet" name="c" value="violet" />
+							<label class="NomeCor" for="violet">violet #ee82ee</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="wheat" name="c" value="wheat" />
+							<label class="NomeCor" for="wheat">wheat #f5deb3</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="white" name="c" value="white" />
+							<label class="NomeCor" for="white">white #ffffff</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="whitesmoke" name="c" value="whitesmoke" />
+							<label class="NomeCor" for="whitesmoke">whitesmoke #f5f5f5</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="yellow" name="c" value="yellow" />
+							<label class="NomeCor" for="yellow">yellow #ffff00</label>
+						</div>
+						<div class="Cor">
+							<input type="checkbox" id="yellowgreen" name="c" value="yellowgreen" />
+							<label class="NomeCor" for="yellowgreen">yellowgreen #9acd32</label>
+						</div>
+					</fieldset>
+
+					<button type="button" id="SelecionarTudo">selecionar tudo</button>
+					<button type="reset">limpar tudo</button>
+					<button type="submit">enviar</button>
+				</form>
+			</section>
+		</main>
+	</body>
 </html>

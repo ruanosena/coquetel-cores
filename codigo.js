@@ -16,9 +16,24 @@ const server = http.createServer(function (req, res) {
 			return res.end();
 		} else if (caminho == "/cores") {
 			/* API */
+			const estilosSaida = ["compact", "compressed", "expanded", "nested"];
+			let estilo = undefined;
+
+			let consultaAnalizada = qs.parse(req.url);
+			if ("estilo" in consultaAnalizada) {
+				if (estilosSaida.includes(consultaAnalizada["estilo"])) {
+					estilo = consultaAnalizada["estilo"];
+				}
+				delete consultaAnalizada["estilo"];
+			} else if (`${caminho}?estilo` in consultaAnalizada) {
+				if (estilosSaida.includes(consultaAnalizada[`${caminho}?estilo`])) {
+					estilo = consultaAnalizada[`${caminho}?estilo`];
+				}
+				delete consultaAnalizada[`${caminho}?estilo`];
+			}
 
 			// identifica todos valores sendo cores
-			let cores = Object.values(qs.parse(req.url));
+			let cores = Object.values(consultaAnalizada);
 
 			if (cores.length) {
 				// TODO: adicionar filtro de cores nomeadas do css
@@ -32,6 +47,7 @@ const server = http.createServer(function (req, res) {
 				}, []);
 
 				const resultado = sass.renderSync({
+					outputStyle: estilo,
 					data: cores.reduce(function (estilos, cor) {
 						// aplica o tom branco de 80 para 20 porcento
 						// define meio dos tons, a cor principal
@@ -63,7 +79,6 @@ const server = http.createServer(function (req, res) {
 					}, ""),
 				});
 
-				// TODO: adicionar resposta minificada, resumida em uma linha
 				res.writeHead(200, { "Content-Type": "text/css; charset=utf-8" });
 				res.write(resultado.css);
 

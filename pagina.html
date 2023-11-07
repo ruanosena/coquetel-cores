@@ -5,8 +5,11 @@
 		<meta name="c" value="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0" />
 		<title>Coquetel de Cores</title>
 		<style>
-			#Cores {
-				min-height: 12rem;
+			.esconder {
+				display: none !important;
+			}
+			.mostrar {
+				display: block;
 			}
 			fieldset {
 				max-height: 50vh;
@@ -20,6 +23,9 @@
 			legend {
 				padding: 0.5rem;
 				font-size: 1.1rem;
+			}
+			#CoresPadrao {
+				min-height: 12rem;
 			}
 			.Cor {
 				flex: 1 auto 1;
@@ -62,14 +68,59 @@
 				border-color: rgba(0, 0, 0, 0.125);
 				box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.25);
 			}
+			#CoresEntrada,
+			#EstiloSaida {
+				max-width: 45rem;
+			}
+			select {
+				height: 2.5rem;
+				width: 100%;
+				/* max-width: 20rem; */
+				margin: 0 auto;
+			}
+			.MetodoEntrada {
+				display: flex;
+				flex-flow: row nowrap;
+				align-items: center;
+			}
+			#EntradaCor {
+				width: 2.9rem;
+				height: 2.9rem;
+				margin: 0 0.5rem;
+			}
+			#ValorCor {
+				margin: 0 0 0 1rem;
+				max-width: 8rem;
+			}
+			#NomeCor {
+				margin-bottom: unset;
+				max-width: 12rem;
+			}
+			input,
+			select,
+			textarea {
+				font-family: inherit;
+				font-size: inherit;
+				padding: 0.5rem;
+				margin-bottom: 1rem;
+				border: 1px solid #ccc;
+				border-radius: 3px;
+				box-sizing: border-box;
+				vertical-align: sub;
+			}
 		</style>
 		<script>
 			window.addEventListener("DOMContentLoaded", function () {
-				const corOpcaoRgx = /(\w+)\s(#[a-f0-9]{6})/i; //vermelho #ffff00;
+				const corOpcaoRgx = /(\w+)\s(#[a-fA-F0-9]{6})/i; //vermelho #ffff00;
 				const cores = document.querySelectorAll(".Cor");
-				const selecionarTudoBtn = document.getElementById("SelecionarTudo");
+				const selecionarTudoBt = document.getElementById("SelecionarTudo");
+				const adicionarBt = document.getElementById("Adicionar");
+				const coresEntradaElemento = document.getElementById("CoresEntrada");
+				const dadosEntradaElemento = document.getElementById("DadosEntrada");
+				const metodoEntradaElemento = document.getElementById("MetodoEntrada");
 
 				cores.forEach(function (elemento) {
+					// cria amostra de cores padrão
 					let [_, nome, corEmHexa] = corOpcaoRgx.exec(elemento.textContent) ?? [];
 					if (_) {
 						let amostra = document.createElement("input");
@@ -86,13 +137,136 @@
 					}
 				});
 
-				selecionarTudoBtn.addEventListener("pointerup", function () {
+				selecionarTudoBt.addEventListener("pointerup", function () {
+					// marca a caixa de todas as cores padrão
 					/** @type {HTMLInputElement} **/
 					let input;
 					cores.forEach(function (elemento) {
 						input = elemento.querySelector("input");
 						input.checked = true;
 					});
+				});
+
+				adicionarBt.addEventListener("pointerup", function (e) {
+					if (!dadosEntradaElemento.classList.contains("mostrar")) {
+						dadosEntradaElemento.classList.remove("esconder");
+						dadosEntradaElemento.classList.add("mostrar");
+
+						dadosEntradaElemento.addEventListener("focus", function (evento) {
+							/** @type {HTMLSelectElement} **/
+							let elemento = evento.target;
+							elemento.selectedIndex = 0;
+						});
+						dadosEntradaElemento.addEventListener("change", function (evento) {
+							/** @type {HTMLSelectElement} **/
+							let elemento = evento.target;
+
+							/**
+							 * @readonly
+							 * @enum {function}
+							 */
+							const entradas = {
+								hexadecimal: function (recipiente) {
+									let nomeElemento = document.createElement("label");
+									nomeElemento.setAttribute("for", "NomeCor");
+									let entradaNome = document.createElement("input");
+									entradaNome.type = "text";
+									entradaNome.name = "nomeCor";
+									entradaNome.id = "NomeCor";
+									nomeElemento.appendChild(entradaNome);
+									recipiente.appendChild(nomeElemento);
+
+									let entradaValor = document.createElement("input");
+									entradaValor.type = "text";
+									entradaValor.pattern = "#[a-fA-F0-9]{3,6}";
+									entradaValor.name = "valorCor";
+									entradaValor.id = "ValorCor";
+									recipiente.appendChild(entradaValor);
+
+									let entradaCor = document.createElement("input");
+									entradaCor.type = "color";
+									entradaCor.name = "entradaCor";
+									entradaCor.id = "EntradaCor";
+									entradaValor.value = entradaCor.value;
+									recipiente.appendChild(entradaCor);
+
+									entradaValor.addEventListener("change", function (evento) {
+										entradaCor.value = entradaValor.value;
+									});
+									const dadosEntradaElemento = document.getElementById("DadosEntrada");
+									entradaCor.addEventListener("change", function (evento) {
+										entradaValor.value = entradaCor.value;
+									});
+
+									let entradaBotao = document.createElement("button");
+									entradaBotao.type = "button";
+									entradaBotao.id = "EntradaBotao";
+									entradaBotao.textContent = "Ok";
+									recipiente.appendChild(entradaBotao);
+
+									entradaBotao.addEventListener("pointerup", function (evento) {
+										let [nome] = /^[A-Z0-9\-]+/i.exec(entradaNome.value) || [];
+										if (nome) {
+											// esconde metodo entrada
+											recipiente.innerHTML = "";
+											recipiente.classList.remove("mostrar");
+											recipiente.classList.add("esconder");
+											// esconde seletor
+											dadosEntradaElemento.classList.add("esconder");
+											dadosEntradaElemento.classList.remove("mostrar");
+
+											// disponibiliza checkbox para a cor
+											let elemento = document.createElement("div");
+											elemento.classList.add("Cor");
+											let amostra = document.createElement("input");
+											amostra.type = "color";
+											amostra.classList.add("CorAmostra");
+											amostra.setAttribute("value", entradaCor.value);
+											amostra.disabled = true;
+											// label - rotulo
+											let rotulo = document.createElement("label");
+											rotulo.classList.add("NomeCor");
+											rotulo.textContent = nome;
+											rotulo.appendChild(amostra);
+											// checkbox
+											let entradaNomeCor = document.createElement("input");
+											entradaNomeCor.type = "checkbox";
+											entradaNomeCor.name = "c";
+											entradaNomeCor.value = entradaCor.value;
+											entradaNomeCor.id = nome;
+											rotulo.setAttribute("for", nome);
+
+											elemento.appendChild(entradaNomeCor);
+											elemento.appendChild(rotulo);
+
+											coresEntradaElemento.append(elemento);
+
+											/* <div class="Cor">
+												<input type="checkbox" id="aliceblue" name="c" value="aliceblue" />
+												<label class="NomeCor" for="aliceblue">
+													aliceblue
+													<input type="color" class="CorAmostra" value="aliceblue" disabled/>
+												</label>
+											</div>; */
+										}
+									});
+
+									recipiente.classList.remove("esconder");
+									recipiente.classList.add("mostrar");
+								},
+								// TODO: adicionar método de entrada com imagem colorida,
+								// TODO: adicionar método de entrada com paleta de cores
+							};
+
+							let recipiente = document.querySelector(".MetodoEntrada");
+							if (recipiente.classList.contains("esconder") && entradas[elemento.value]) {
+								entradas[elemento.value](recipiente);
+							}
+						});
+					}
+
+					let href = window.location.href.replace(/#\w*/gi, "");
+					window.location.href = href + "#DadosEntrada";
 				});
 			});
 		</script>
@@ -103,7 +277,7 @@
 
 			<section>
 				<form action="/cores" method="get">
-					<fieldset id="Cores">
+					<fieldset id="CoresPadrao">
 						<legend>Cores padrão</legend>
 						<div class="Cor">
 							<input type="checkbox" id="aliceblue" name="c" value="aliceblue" />
@@ -702,8 +876,33 @@
 							<label class="NomeCor" for="yellowgreen">yellowgreen #9acd32</label>
 						</div>
 					</fieldset>
+					<button type="button" id="SelecionarTudo">Selecionar tudo</button>
 
-					<fieldset>
+					<fieldset id="CoresEntrada">
+						<legend>Cores de entrada</legend>
+
+						<select name="dadosEntrada" id="DadosEntrada" class="esconder">
+							<option value="">Selecione uma opção</option>
+							<option value="hexadecimal">Cor hexadecimal</option>
+							<option value="imagem" disabled>Cores de imagem</option>
+							<option value="paleta" disabled>Cores de paleta</option>
+						</select>
+
+						<div class="MetodoEntrada esconder">
+							<!-- Método hexadecimal -->
+							<!-- <label for="NomeCor">
+								Nome da cor:
+								<input type="text" name="nomeCor" id="NomeCor" />
+							</label>
+							<input type="text" name="valorCor" id="ValorCor" pattern="#[a-fA-F0-9]{3,6}" />
+							<input type="color" name="entradaCor" id="EntradaCor" /> -->
+						</div>
+					</fieldset>
+
+					<button type="button" id="Adicionar">Adicionar</button>
+					<!-- Hash nome : hexadecimal, paleta de cores : json, conjunto-croma : imagem -->
+
+					<fieldset id="EstiloSaida">
 						<legend>Estilo de saída</legend>
 						<div class="Estilo">
 							<input type="radio" name="estilo" id="nenhum" checked="true" />
@@ -719,9 +918,9 @@
 						</div>
 					</fieldset>
 
-					<button type="button" id="SelecionarTudo">selecionar tudo</button>
-					<button type="reset">limpar tudo</button>
-					<button type="submit">enviar</button>
+					<button type="reset">Limpar tudo</button>
+
+					<button type="submit">Enviar</button>
 				</form>
 			</section>
 		</main>
